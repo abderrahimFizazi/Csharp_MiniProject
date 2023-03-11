@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
+using System.Linq;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Prepa
@@ -47,14 +53,31 @@ namespace Prepa
             return 0;
         }
 
-        //public dynamic find()
-        //{
-        //    Dictionary<string, object> dico = new Dictionary<string, object>();
-        //    sql = "select * from " + this.GetType().Name + " where id=" + id;
-        //    Connexion Cnx = new Connexion(sql);
+        public dynamic find()
+        {
+            sql = "select * from " + this.GetType().Name + " where id=" + id;
 
-        //    return DictionaryToObject(dico);
-        //}
+            Dictionary<string, string> champs = new Dictionary<string, string>();
+            Dictionary<string, object> dico = new Dictionary<string, object>();
+
+
+            champs = Connexion.getChamps_Table(GetType().Name);
+            IDataReader reader = Connexion.Select(sql);
+
+            string champsName = "";
+            Type type = null;
+            int index = 0;
+            int nbr_Champs = reader.FieldCount;
+            while (reader.Read())
+            {
+                for (int i = 0;i < nbr_Champs; i++) {
+                    champsName = champs.Keys.ElementAt(i);
+                    type = GetFieldType(champs.Values.ElementAt(i)); 
+                }
+            }
+
+            return DictionaryToObject(dico);
+        }
 
     }
 }
