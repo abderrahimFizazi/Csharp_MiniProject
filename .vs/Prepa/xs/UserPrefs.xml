@@ -1,0 +1,30 @@
+﻿<Properties StartupConfiguration="{5D465150-6078-4907-BDCD-E9FF4AF20B28}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Connexio.cs">
+    <Files>
+      <File FileName="DatabaseCnx.cs" Line="12" Column="48" />
+      <File FileName="Connexio.cs" Line="6" Column="2" />
+      <File FileName="Program.cs" />
+      <File FileName="GestionEleve.cs" />
+      <File FileName="IDAO.cs" />
+      <File FileName="Eleve.cs" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Prepa" expanded="True">
+            <Node name="Prepa" expanded="True">
+              <Node name="Connexio.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Prepa PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+</Properties>

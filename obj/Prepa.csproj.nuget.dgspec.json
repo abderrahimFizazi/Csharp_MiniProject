@@ -1,27 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Abder\\OneDrive\\Documents\\MY DOC\\Ginf2\\.net\\Prepa\\Prepa\\Prepa.csproj": {}
+    "/Users/macbook/Documents/Ginf2/net/C-_Mysql_Connection/Prepa.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Abder\\OneDrive\\Documents\\MY DOC\\Ginf2\\.net\\Prepa\\Prepa\\Prepa.csproj": {
+    "/Users/macbook/Documents/Ginf2/net/C-_Mysql_Connection/Prepa.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Abder\\OneDrive\\Documents\\MY DOC\\Ginf2\\.net\\Prepa\\Prepa\\Prepa.csproj",
+        "projectUniqueName": "/Users/macbook/Documents/Ginf2/net/C-_Mysql_Connection/Prepa.csproj",
         "projectName": "Prepa",
-        "projectPath": "C:\\Users\\Abder\\OneDrive\\Documents\\MY DOC\\Ginf2\\.net\\Prepa\\Prepa\\Prepa.csproj",
-        "packagesPath": "C:\\Users\\Abder\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Abder\\OneDrive\\Documents\\MY DOC\\Ginf2\\.net\\Prepa\\Prepa\\obj\\",
+        "projectPath": "/Users/macbook/Documents/Ginf2/net/C-_Mysql_Connection/Prepa.csproj",
+        "packagesPath": "/Users/macbook/.nuget/packages/",
+        "outputPath": "/Users/macbook/Documents/Ginf2/net/C-_Mysql_Connection/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Abder\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/macbook/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,6 +42,10 @@
             "MySql.Data": {
               "target": "Package",
               "version": "[8.0.29, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
             }
           },
           "imports": [
@@ -61,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.201/RuntimeIdentifierGraph.json"
         }
       }
     }
