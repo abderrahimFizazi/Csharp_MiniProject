@@ -1,29 +1,27 @@
 ﻿<Properties StartupConfiguration="{5D465150-6078-4907-BDCD-E9FF4AF20B28}|Default">
+  <MonoDevelop.Ide.ItemProperties.Prepa PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Connexio.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Eleve.cs">
     <Files>
-      <File FileName="DatabaseCnx.cs" Line="12" Column="48" />
-      <File FileName="Connexio.cs" Line="6" Column="2" />
-      <File FileName="Program.cs" />
-      <File FileName="GestionEleve.cs" />
-      <File FileName="IDAO.cs" />
-      <File FileName="Eleve.cs" />
+      <File FileName="Program.cs" Line="20" Column="5" IsPinned="True" />
+      <File FileName="Model.cs" Line="101" Column="1" IsPinned="True" />
+      <File FileName="Connexion.cs" Line="9" Column="33" />
+      <File FileName="Eleve.cs" Line="21" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Prepa" expanded="True">
             <Node name="Prepa" expanded="True">
-              <Node name="Connexio.cs" selected="True" />
+              <Node name="Eleve.cs" selected="True" />
             </Node>
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.Prepa PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

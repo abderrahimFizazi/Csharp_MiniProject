@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using MySql.Data.MySqlClient;
-
+using Npgsql;
 namespace Prepa
 {
     class Connexion
@@ -31,6 +31,14 @@ namespace Prepa
                     con = new MySqlConnection(cstr);
                     cmd = new MySqlCommand("", (MySqlConnection)con);  // Cast con from IDbConnection to Mysql connection
                     con.Open();
+                    Console.WriteLine("Connected to Mysql successfully");
+                    break;
+                case "postgres":
+                    con = new NpgsqlConnection(cstr);
+                    cmd = new NpgsqlCommand("", (NpgsqlConnection)con);
+                    con.Open();
+                    Console.WriteLine("Connected to Postgres successfully");
+
                     break;
                 // case: "Oracle" ... Here we add other databases...
                 default:

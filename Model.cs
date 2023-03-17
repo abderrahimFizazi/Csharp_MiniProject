@@ -7,78 +7,182 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using Newtonsoft.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Prepa
 {
-	abstract class Model
-	{
-        public int id { get; set; }
+    abstract public class Model
+    {
+        public static int id { get; set; }
         private string sql = "";
 
-
-        Dictionary<string, T> ObjectToDictionary<T>(object obj)  // This Method Convert Object to Dictionary
+        public static string Capitalize(string str)
         {
+            return char.ToUpper(str[0]) + str.Substring(1);
+        }
 
-            // Stuck overflow :)
-            // https://stackoverflow.com/questions/11576886/how-to-convert-object-to-dictionarytkey-tvalue-in-c
-            // Add Newtonsoft Package from Nuget...
-
+private Dictionary<string, T> ObjectToDictionary<T>(Object obj)
+        {
             var json = JsonConvert.SerializeObject(obj);
-            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, T>>(json);
-            return dictionary;
+            var dico = JsonConvert.DeserializeObject<Dictionary<string, T>>(json);
+            return dico;
         }
 
-        private dynamic DictionaryToObject(Dictionary<String, object> dico)
-            // We use here a dynamic type return cuz we dont know the exact type of the object
-            //  I copied this from an older project :(
+        private dynamic DictionaryToObject(Dictionary<string, object> dico)
         {
-            if (dico.Count == 0) return null;
-            Type type = GetType();
-            var obj = Activator.CreateInstance(type);
-
-            foreach (var kv in dico)
+            dynamic obj = Activator.CreateInstance(GetType());
+            foreach (var kvp in dico)
             {
-                PropertyInfo info = type.GetProperty(kv.Key);
-                info.SetValue(obj, Convert.ChangeType(kv.Value, info.PropertyType));
+                PropertyInfo propertyInfo = (GetType()).GetProperty(kvp.Key);
+                if (propertyInfo != null && propertyInfo.CanWrite)
+                {
+                    object value = kvp.Value;
+                    if (value != null && value.GetType() != propertyInfo.PropertyType)
+                    {
+                        value = Convert.ChangeType(value, propertyInfo.PropertyType);
+                    }
+                    propertyInfo.SetValue(obj, value, null);
+                }
             }
-            return Convert.ChangeType(obj, this.GetType());
+            return obj;
         }
 
-        public int save()
+        private static dynamic DictionaryToObject<T>(Dictionary<string, object> dico)
         {
-            Dictionary<string, string> dico = new Dictionary<string, string>();
-            dico = ObjectToDictionary<string>(this);
 
+            Type type = typeof(T);
+            T obj = Activator.CreateInstance<T>();
 
-            return 0;
-        }
-
-        public dynamic find()
-        {
-            sql = "select * from " + this.GetType().Name + " where id=" + id;
-
-            Dictionary<string, string> champs = new Dictionary<string, string>();
-            Dictionary<string, object> dico = new Dictionary<string, object>();
-
-
-            champs = Connexion.getChamps_Table(GetType().Name);
-            IDataReader reader = Connexion.Select(sql);
-
-            string champsName = "";
-            Type type = null;
-            int index = 0;
-            int nbr_Champs = reader.FieldCount;
-            while (reader.Read())
+            foreach (var kvp in dico)
             {
-                for (int i = 0;i < nbr_Champs; i++) {
-                    champsName = champs.Keys.ElementAt(i);
-                    type = GetFieldType(champs.Values.ElementAt(i)); 
+                PropertyInfo propertyInfo = type.GetProperty(kvp.Key);
+                if (propertyInfo != null && propertyInfo.CanWrite)
+                {
+                    object value = kvp.Value;
+                    if (value != null && value.GetType() != propertyInfo.PropertyType)
+                    {
+                        value = Convert.ChangeType(value, propertyInfo.PropertyType);
+                    }
+                    propertyInfo.SetValue(obj, value, null);
                 }
             }
 
-            return DictionaryToObject(dico);
+            return obj;
+        }
+
+
+
+        public dynamic find()
+        {
+            if (id == 0)
+                //No record in database
+                return -1;
+            Dictionary<string, object> dico = new Dictionary<string, object>();
+            sql = "select * from " + this.GetType().Name + " where id=" + id;
+            Console.WriteLine(sql);
+            using (IDataReader dr = Connexion.Select(sql))
+            {
+                while (dr.Read())
+                {
+                    //loop over the reader to get column names and values by index
+                    for (var i = 0; i < dr.FieldCount; i++)
+                    {
+                        dico.Add(Capitalize(dr.GetName(i)), dr.GetValue(i));
+                    }
+                }
+            }
+            // return an object by converting the dictionary
+            return dico;
+        }
+        public static dynamic find<T>(int id)
+        {
+            if (id == 0)
+                //No record in database
+                return -1;
+            Dictionary<string, object> dico = new Dictionary<string, object>();
+            string query = "select * from " + typeof(T).Name + " where id=" + id;
+            using (IDataReader dr = Connexion.Select(query))
+            {
+                while (dr.Read())
+                {
+                    //loop over the reader to get column names and values by index
+                    for (var i = 0; i < dr.FieldCount; i++)
+                    {
+                        dico.Add(Capitalize(dr.GetName(i)), dr.GetValue(i));
+                    }
+                }
+            }
+            return dico;
+        }
+        public int save()
+        { 
+                Dictionary<string, string> dico = new Dictionary<string, string>();
+                dico = ObjectToDictionary<string>(this);
+                if (id == 0)
+                {
+                    // Get the column names and values from the dictionary
+                    string columnNames = string.Join(",", dico.Keys.Where(key => key != "Id"));
+                    string values = string.Join(",", dico.Where(pair => pair.Key != "Id").Select(pair => $"'{pair.Value}'"));
+                    // Create the INSERT statement using the class name of the object being saved
+                    sql = $"INSERT INTO {this.GetType().Name} ({columnNames}) VALUES ({values})";
+                }
+                else
+                {
+                    //set column name = value
+                    string set = string.Join(",", dico.Where(pair => pair.Key != "Id").Select(pair => $"{pair.Key} = '{pair.Value}'"));
+                    sql = $"UPDATE {this.GetType().Name} SET {set} WHERE id= {id}";
+                }
+                // Execute the query
+                Console.WriteLine(sql);
+                return Connexion.IUD(sql);
+              
+        }
+        public int delete() {
+            if (id == 0)
+                return -1;
+            string req = $"Delete from {this.GetType().Name} where id = {id}";
+            return Connexion.IUD(req);
+        }
+        public  List<dynamic> All()
+        {
+            List<dynamic> Collection = new List<dynamic>();
+            sql = "select * from " + this.GetType().Name;
+            using (IDataReader dr = Connexion.Select(sql))
+            {
+                while (dr.Read())
+                {
+                    Dictionary<string, object> dico = new Dictionary<string, object>();
+                    //loop over the reader to get column names and values by index
+                    for (var i = 0; i < dr.FieldCount; i++)
+                        dico.Add(Capitalize(dr.GetName(i)), dr.GetValue(i));
+                    Collection.Add(DictionaryToObject(dico));
+
+                }
+            }
+            return Collection;
+        }
+        public static List<dynamic> all<T>()
+        {
+
+            List<dynamic> Collection = new List<dynamic>();
+            string query = "select * from " + typeof(T).Name;
+            using (IDataReader dr = Connexion.Select(query))
+            {
+                while (dr.Read())
+                {
+                    Dictionary<string, object> dico = new Dictionary<string, object>();
+                    //loop over the reader to get column names and values by index
+                    for (var i = 0; i < dr.FieldCount; i++)
+                        dico.Add(Capitalize(dr.GetName(i)), dr.GetValue(i));
+                    Collection.Add(DictionaryToObject<T>(dico));
+
+                }
+            }
+            return Collection;
         }
 
     }
+
 }
+
 
