@@ -13,7 +13,7 @@ namespace Prepa
 {
     abstract public class Model
     {
-        public static int id { get; set; }
+        public  int id { get; set; }
         private string sql = "";
 
         public static string Capitalize(string str)
@@ -71,16 +71,14 @@ private Dictionary<string, T> ObjectToDictionary<T>(Object obj)
         }
 
 
-
-        public dynamic find()
+        public  Dictionary<string, object> find()
         {
             if (id == 0)
                 //No record in database
-                return -1;
+                return null;
             Dictionary<string, object> dico = new Dictionary<string, object>();
-            sql = "select * from " + this.GetType().Name + " where id=" + id;
-            Console.WriteLine(sql);
-            using (IDataReader dr = Connexion.Select(sql))
+            string query = "select * from " + GetType().Name + " where id=" + id;
+            using (IDataReader dr = Connexion.Select(query))
             {
                 while (dr.Read())
                 {
@@ -91,14 +89,13 @@ private Dictionary<string, T> ObjectToDictionary<T>(Object obj)
                     }
                 }
             }
-            // return an object by converting the dictionary
             return dico;
         }
-        public static dynamic find<T>(int id)
+        public static Dictionary<string, object> find<T>(int id)
         {
             if (id == 0)
                 //No record in database
-                return -1;
+                return null;
             Dictionary<string, object> dico = new Dictionary<string, object>();
             string query = "select * from " + typeof(T).Name + " where id=" + id;
             using (IDataReader dr = Connexion.Select(query))
@@ -114,6 +111,9 @@ private Dictionary<string, T> ObjectToDictionary<T>(Object obj)
             }
             return dico;
         }
+
+
+        // Insert or Update all Columns 
         public int save()
         { 
                 Dictionary<string, string> dico = new Dictionary<string, string>();
@@ -137,6 +137,22 @@ private Dictionary<string, T> ObjectToDictionary<T>(Object obj)
                 return Connexion.IUD(sql);
               
         }
+
+        // Update specific Columns 
+        public int save(params string[] columnsToUpdate)
+        {
+            Dictionary<string, string> dico = new Dictionary<string, string>();
+            dico = ObjectToDictionary<string>(this);
+            //set column name = value for the specified columns
+            string set = string.Join(",", dico
+                .Where(pair => columnsToUpdate.Contains(pair.Key) && pair.Key != "Id")
+                .Select(pair => $"{pair.Key} = '{pair.Value}'"));
+                    sql = $"UPDATE {this.GetType().Name} SET {set} WHERE id= {id}";
+            // Execute the query
+            Console.WriteLine(sql);
+            return Connexion.IUD(sql);
+        }
+
         public int delete() {
             if (id == 0)
                 return -1;
