@@ -12,7 +12,11 @@ CREATE TRIGGER Update_Niveau_Eleve AFTER INSERT ON moyennes
     end if;
 END
 
+
+
 -- Trigger pour calculer la moyenne (mysql)
+
+
 
 CREATE TRIGGER Update_Moyenne BEFORE INSERT ON notes
  FOR EACH ROW BEGIN
