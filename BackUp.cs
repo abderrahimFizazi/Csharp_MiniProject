@@ -18,6 +18,7 @@ namespace MinProjetLibrary
         public static void Connect()
         {
             conn.Open();
+            cmd.Connection = con;
         }
         // Garder la trace des eleves supprimées
         public static void ToXML(string cod)
