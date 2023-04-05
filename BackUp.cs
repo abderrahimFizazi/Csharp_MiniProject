@@ -23,6 +23,7 @@ namespace MinProjetLibrary
         public static void ToXML(string cod)
         {
             XDocument doc;
+            Connect();
             try
             {
                 doc = XDocument.Load(chemin);
