@@ -107,7 +107,7 @@ namespace MinProjetLibrary
 
         }
 
-        public static void Recuperer(DateTime date)
+        public static void Restaurer(DateTime date)
         {
             XDocument doc = XDocument.Load(@"D:\ensat.xml");
             Connect();
