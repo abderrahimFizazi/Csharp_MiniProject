@@ -15,7 +15,7 @@ namespace MinProjetLibrary
         public static MySqlConnection conn = new MySqlConnection("Server=127.0.0.1 ;Database=miniprojet;Uid=root;Pwd=;");
         public static MySqlCommand cmd = new MySqlCommand();
         public static string chemin = @"D:\ensat.xml";
-        public void Connect()
+        public static void Connect()
         {
             conn.Open();
         }
@@ -106,7 +106,51 @@ namespace MinProjetLibrary
             doc.Save(chemin);
 
         }
-        
+
+        public static void Recuperer(DateTime date)
+        {
+            XDocument doc = XDocument.Load(@"D:\ensat.xml");
+            Connect();
+            foreach (var eleve in doc.Descendants("eleve"))
+            {
+                DateTime datesupr = DateTime.Parse(eleve.Element("date_suppression").Value);
+                if (datesupr >= new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second))
+                {
+                    string code_ele = eleve.Element("code").Value;
+                    string nom = eleve.Element("nom").Value;
+                    string prenom = eleve.Element("prenom").Value;
+                    string niveau = eleve.Element("niveau").Value;
+                    string code_fil = eleve.Element("code_fil").Value;
+                    // Restaurer l'eleve
+                    cmd.CommandText = "insert into eleve(code,nom,prenom,niveau,code_fil) values" +
+                        "(" + code_ele + "," + nom + "," + prenom + "," + niveau + "," + code_fil + ")";
+                    cmd.ExecuteNonQuery();
+
+                    var notes = from note in eleve.Descendants("note")
+                                select note;
+                    // Restaurer les notes de l'eleve
+                    foreach (var note in notes)
+                    {
+                        string code_mat = note.Element("code_matiere").Value;
+                        string note_mat = note.Element("note_matiere").Value;
+                        cmd.Connection = conn;
+                        cmd.CommandText = "insert into notes(code_eleve,code_mat,note) values" +
+                            "("+code_ele +","+code_mat+","+note_mat+")";
+                        cmd.ExecuteNonQuery();
+                            
+                    }
+                    /*
+                         Pour la moyenne elle sera calculé automatiquement par un trigger
+                         une fois les notes sont saisies
+                         Un autre trigger va incrementer le niveau de l'eleve
+                         si la moyenne >= 12
+
+                     */
+
+                }
+            }
+        }
+
 
         // Rapport des eleves supprimes en HTML
         public static void ToHTML(string xml, string xslt)
